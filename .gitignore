@@ -1,6 +1,7 @@
 
 /pokerbot/*.ipynb
 .idea
+*.csv
 
 
 # Byte-compiled / optimized / DLL files

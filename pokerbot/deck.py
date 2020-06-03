@@ -2,23 +2,21 @@
 from itertools import product
 import random
 
-
 from card import Card
+
+
+ranks = ("2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A")
+suits = ("C", "D", "H", "S")
 
 
 class Deck:
     """A single standard deck of 52 playing cards."""
 
-    def __init__(self):
-        ranks = ("A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K")
-        suits = ("C", "D", "H", "S")
-        self.__dealt = list()
-        self.__cards = [Card(t[0], t[1]) for t in list(product(suits, ranks))]
-        self.shuffle()
+    cards = [Card(t[0], t[1]) for t in list(product(suits, ranks))]
 
-    @property
-    def cards(self):
-        return self.__cards
+    def __init__(self):
+        self.__dealt = list()
+        self.shuffle()
 
     @property
     def dealt(self):
