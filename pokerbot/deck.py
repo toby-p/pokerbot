@@ -3,16 +3,13 @@ from itertools import product
 import random
 
 from card import Card
-
-
-ranks = ("2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A")
-suits = ("C", "D", "H", "S")
+from variables import RANKS, SUITS
 
 
 class Deck:
     """A single standard deck of 52 playing cards."""
 
-    cards = [Card(t[0], t[1]) for t in list(product(suits, ranks))]
+    cards = [Card(t[0], t[1]) for t in list(product(SUITS, RANKS))]
 
     def __init__(self):
         self.__dealt = list()

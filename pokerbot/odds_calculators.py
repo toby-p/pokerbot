@@ -6,11 +6,9 @@ import numpy as np
 
 from deck import Deck
 from card import Card
+from variables import RANKS, SUITS
 
 DIR, FILENAME = os.path.split(__file__)
-
-ranks = ("2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A")
-suits = ("C", "D", "H", "S")
 
 
 class HoldemFlopOdds:
@@ -37,30 +35,30 @@ class HoldemFlopOdds:
         assert (len(df.columns) == 52) and (len(set(df.columns)) == 52)
 
         # Calculate the number of each suit in each hand:
-        for suit in suits:
+        for suit in SUITS:
             suit_cols = [c for c in card_columns if c.suit == suit]
             df[suit] = df[suit_cols].sum(axis=1)
         # Calculate if hand contains a flush:
-        df["suit_max"] = df[sorted(suits)].max(axis=1)
+        df["suit_max"] = df[sorted(SUITS)].max(axis=1)
         df["flush"] = np.where(df["suit_max"] == 5, True, False)
 
         # Calculate the number of each rank in each hand, and highest/lowest rank:
         df["highest_rank"], df["lowest_rank"] = -1, 14
-        for rank in ranks:
+        for rank in RANKS:
             rank_cols = [c for c in card_columns if c.rank == rank]
             df[rank] = df[rank_cols].sum(axis=1).astype(int)
-            df["n_rank"] = np.where(df[rank], ranks.index(rank), np.nan)  # Rank as an integer.
+            df["n_rank"] = np.where(df[rank], RANKS.index(rank), np.nan)  # Rank as an integer.
             df["highest_rank"] = np.where(df["n_rank"] > df["highest_rank"], df["n_rank"], df["highest_rank"])
             df["lowest_rank"] = np.where(df["n_rank"] < df["lowest_rank"], df["n_rank"], df["lowest_rank"])
-        rank_map = dict(enumerate(ranks))
+        rank_map = dict(enumerate(RANKS))
         df["highest_rank"] = df["highest_rank"].map(rank_map)
         df["lowest_rank"] = df["lowest_rank"].map(rank_map)
         df.drop(columns=["n_rank"], inplace=True)
 
         # Calculate if hand contains pair/ 3/4 of a kind:
         for i, label in {2: "pair", 3: "three", 4: "four"}.items():
-            boolean = df[sorted(ranks)] == i
-            columns = [f"{label}_{r}" for r in sorted(ranks)]
+            boolean = df[sorted(RANKS)] == i
+            columns = [f"{label}_{r}" for r in sorted(RANKS)]
             boolean.columns = columns
             boolean[f"{label}_count"] = boolean.sum(axis=1)
             df = df.merge(boolean, left_index=True, right_index=True)
